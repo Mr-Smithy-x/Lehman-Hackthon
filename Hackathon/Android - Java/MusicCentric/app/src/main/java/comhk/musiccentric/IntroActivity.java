@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,6 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.parse.LogInCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
 import comhk.musiccentric.adapters.VPagerAdapter;
 import comhk.musiccentric.callbacks.OnIntroBackListener;
 import comhk.musiccentric.models.Page;
@@ -31,100 +40,63 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
         mPager = (ViewPager) findViewById(R.id.intro_viewpager);
         mPager.setAdapter(mVPAdapter = new VPagerAdapter(getSupportFragmentManager()));
         mPager.setOffscreenPageLimit(5);
-        mVPAdapter.append(Page.Builder().setFragment(IntroPage.instatiate(R.mipmap.ic_launcher, "Welcome")));
-        mVPAdapter.append(Page.Builder().setFragment(IntroPage.instatiate(R.mipmap.ic_launcher, "How you doing")));
         mVPAdapter.append(Page.Builder().setFragment(new FinalPage()).setTitle("Hello"));
+
     }
 
-    @Override
-    public void OnButtonClicked(View view) {
-        int position = mPager.getCurrentItem();
-        if (position + 1 == mVPAdapter.getCount()) {
-            //TODO: nothing
-        } else {
-            mPager.setCurrentItem(position + 1, true);
-        }
-    }
 
     @Override
-    public void OnButtonClickedFeedBack(View view, User user) {
+    public void OnButtonClickedFeedBack(final View view, User user, boolean visible) {
         if (view.getId() == R.id.final_frag_btn) {
-            if(user.getUser().length() > 6 && user.getPassword().length() > 6 && user.getEmail().length() > 6){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(new Intent(this, MainActivity.class), ActivityOptionsCompat.makeScaleUpAnimation(view, 0,0,view.getWidth(),view.getHeight()).toBundle());
+
+            if (user.getUser().length() > 6 && user.getPassword().length() > 6) {
+
+                ParseUser parseUser = new ParseUser();
+                parseUser.setPassword(user.getPassword());
+                parseUser.setUsername(user.getUser());
+
+                if(visible && user.getEmail().length() > 6 ){
+                    parseUser.setEmail(user.getEmail());
+                    parseUser.signUpInBackground(new SignUpCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e == null){
+                               Toast.makeText(IntroActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }else if(!visible){
+                    parseUser.logInInBackground(user.getUser(), user.getPassword(), new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+                            if(e == null){
+                                Toast.makeText(IntroActivity.this,"Welcome " + user.getUsername(), Toast.LENGTH_SHORT).show();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                    startActivity(new Intent(IntroActivity.this, MainActivity.class), ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
+                                } else {
+                                    startActivity(new Intent(IntroActivity.this, MainActivity.class));
+                                }
+                            }else{
+                                Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }else{
-                    startActivity(new Intent(this, MainActivity.class));
+
                 }
+
                 finish();
             }
-            return;
         }
     }
 
-    public static class IntroPage extends Fragment implements View.OnClickListener {
-
-        private static final String ICON = "ICON", SUB = "SUB";
-
-        public static IntroPage instatiate(int icon, String sub) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(ICON, icon);
-            bundle.putString(SUB, sub);
-            IntroPage introPage = new IntroPage();
-            introPage.setArguments(bundle);
-            return introPage;
-        }
-
-        String sub;
-        int icon;
-
-        @Override
-        public void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            if (getArguments() != null) {
-                this.sub = getArguments().getString(SUB);
-                this.icon = getArguments().getInt(ICON);
-            }
-        }
-
-        private ImageView imageView;
-        private AppCompatButton button;
-        private AppCompatTextView textView;
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.intro_fragment, container, false);
-            imageView = (ImageView) view.findViewById(R.id.intro_frag_img);
-            button = (AppCompatButton) view.findViewById(R.id.intro_frag_btn);
-            textView = (AppCompatTextView) view.findViewById(R.id.intro_frag_title);
-            textView.setText(sub);
-            imageView.setImageResource(icon);
-            button.setOnClickListener(this);
-            return view;
-        }
-
-        public OnIntroBackListener introBackListener;
-
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            introBackListener = (IntroActivity) context;
-        }
-
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            introBackListener = null;
-        }
-
-        @Override
-        public void onClick(View v) {
-            this.introBackListener.OnButtonClicked(v);
-        }
-    }
 
     public static class FinalPage extends Fragment implements View.OnClickListener {
 
@@ -139,17 +111,34 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         private AppCompatEditText mPassword;
         private AppCompatEditText mUsername;
         private AppCompatButton mRegister;
+        private AppCompatTextView mTextView;
+        public boolean visible = true;
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.final_fragment, container, false);
+            final View view = inflater.inflate(R.layout.final_fragment, container, false);
             mEmail = (AppCompatEditText) view.findViewById(R.id.final_frag_email);
             mPassword = (AppCompatEditText) view.findViewById(R.id.final_frag_pass);
             mUsername = (AppCompatEditText) view.findViewById(R.id.final_frag_user);
             mRegister = (AppCompatButton) view.findViewById(R.id.final_frag_btn);
             mImage = (ImageView) view.findViewById(R.id.final_frag_img);
+            mTextView = (AppCompatTextView)view.findViewById(R.id.final_frag_title);
+            mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    visible = !visible;
+                    if (!visible) {
+                        mEmail.setVisibility(View.GONE);
+                        mTextView.setText("I dont have an account");
+                    } else {
+                        mEmail.setVisibility(View.VISIBLE);
+                        mTextView.setText("I have an account");
+                    }
+                }
+            });
             mRegister.setOnClickListener(this);
+
             return view;
         }
 
@@ -172,11 +161,9 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
             onIntroBackListener.OnButtonClickedFeedBack(v, User.Build()
                             .setUser(mUsername.getText().toString())
                             .setEmail(mEmail.getText().toString())
-                            .setPassword(mPassword.getText().toString())
-            );
+                            .setPassword(mPassword.getText().toString()), visible);
         }
     }
-
 
 
 }

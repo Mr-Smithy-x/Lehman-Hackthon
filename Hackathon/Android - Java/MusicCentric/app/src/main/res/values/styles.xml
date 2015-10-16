@@ -25,9 +25,6 @@
     <style name="AppTheme.Login" parent="AppTheme">
         <item name="android:windowBackground">@color/md_grey_800</item>
         <item name="colorButtonNormal">@color/md_teal_500</item>
-        <item name="colorButtonActivated">@color/md_white_1000</item>
-
-        <item name="android:textColor">@color/md_white_1000</item>
 
     </style>
 

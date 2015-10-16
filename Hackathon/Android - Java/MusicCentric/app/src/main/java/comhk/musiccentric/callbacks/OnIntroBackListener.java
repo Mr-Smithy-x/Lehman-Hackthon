@@ -9,6 +9,5 @@ import comhk.musiccentric.models.User;
  */
 
 public interface OnIntroBackListener {
-    public void OnButtonClicked(View view);
-    public void OnButtonClickedFeedBack(View view, User user);
+    public void OnButtonClickedFeedBack(View view, User user, boolean visible);
 }
