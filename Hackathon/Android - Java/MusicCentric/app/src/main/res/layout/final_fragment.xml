@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/final_frag_img"
+        android:layout_marginTop="72dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="128dp"
+        android:layout_height="128dp" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/final_frag_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:text="Continue"
+        android:layout_height="wrap_content" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/final_frag_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/final_frag_img"
+        android:text="Welcome"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:textSize="22sp"
+        />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:hint="Username"
+        android:padding="16dp"
+        android:id="@+id/final_frag_user"
+        android:layout_below="@id/final_frag_title"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:hint="Email"
+        android:padding="16dp"
+        android:inputType="textEmailAddress"
+        android:layout_below="@id/final_frag_user"
+        android:id="@+id/final_frag_email"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:hint="Password"
+        android:padding="16dp"
+        android:id="@+id/final_frag_pass"
+        android:inputType="textPassword"
+        android:layout_below="@id/final_frag_email"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
