@@ -177,4 +177,6 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         }
     }
 
+
+
 }
