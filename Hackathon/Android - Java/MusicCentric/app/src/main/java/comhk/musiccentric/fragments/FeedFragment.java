@@ -99,7 +99,7 @@ public class FeedFragment extends Fragment {
                 if(view.getId() == R.id.feed_temp_image){
                     Intent i = new Intent(getActivity(), ActivityUser.class);
                     i.putExtra("title", post.getName());
-                    i.putExtra("date", post.getCreatedAt());
+                    i.putExtra("date", post.getUpdatedAt());
                     i.putExtra("link", post.getIcon());
                     startActivity(i);
                     return;
