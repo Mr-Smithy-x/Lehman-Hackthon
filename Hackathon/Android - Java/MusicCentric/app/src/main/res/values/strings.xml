@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MusicCentric</string>
+    <string name="title_activity_intro">IntroActivity</string>
+</resources>
