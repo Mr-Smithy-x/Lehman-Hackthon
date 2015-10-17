@@ -48,6 +48,10 @@
             android:name=".ProfileActivity"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/AppTheme.Login"></activity>
+        <activity
+            android:name=".ActivityUser"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
