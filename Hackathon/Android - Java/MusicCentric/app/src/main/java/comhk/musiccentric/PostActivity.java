@@ -12,7 +12,9 @@ import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -35,6 +37,8 @@ public class PostActivity extends AppCompatActivity {
     String f = null;
     AppCompatButton appCompatButton;
     LinearLayout ll;
+    VideoView v;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +58,8 @@ public class PostActivity extends AppCompatActivity {
             }
         });
         ll = (LinearLayout) findViewById(R.id.temp);
-        i= new ImageView(ll.getContext());
-
+        i = new ImageView(ll.getContext());
+        v = new VideoView(ll.getContext());
         appCompatButton = (AppCompatButton) findViewById(R.id.post_user_btn);
         appCompatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,55 +139,76 @@ public class PostActivity extends AppCompatActivity {
         Toast.makeText(this, String.valueOf(parseFile.canRead()), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, parseFile.getName(), Toast.LENGTH_SHORT).show();
 
-        FileInputStream fis = new FileInputStream(parseFile);
+        byte[] bytes = new byte[(int) parseFile.length()];
+
+        if (type != 2) {
+            FileInputStream fis = new FileInputStream(parseFile);
+            fis.read(bytes, 0, (int) parseFile.length());
+            fis.close();
+        }
+
         final Post parseObject = (Post) Post.create(Post.class);
         parseObject.setName(ParseUser.getCurrentUser().getUsername());
         parseObject.setStatus(((AppCompatEditText) findViewById(R.id.post_edit_text)).getText().toString());
         parseObject.setType(type);
         parseObject.setName(ParseUser.getCurrentUser().getUsername());
         parseObject.setIcon(((ParseFile) ParseUser.getCurrentUser().get("icon")).getUrl());
-
-        byte[] bytes = new byte[(int) parseFile.length()];
-        fis.read(bytes, 0, (int) parseFile.length());
-        fis.close();
-        final ParseFile p = new ParseFile(file_name, bytes);
-        p.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    parseObject.setFile(p);
-                    parseObject.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Toast.makeText(PostActivity.this, String.format("%s : %s", e.getCode(), e.getMessage()), Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(PostActivity.this, "Posted", Toast.LENGTH_SHORT).show();
-                                finish();
+        if(type != -2) {
+            final ParseFile p = new ParseFile(file_name, bytes);
+            p.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        parseObject.setFile(p);
+                        parseObject.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Toast.makeText(PostActivity.this, String.format("%s : %s", e.getCode(), e.getMessage()), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(PostActivity.this, "Posted", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
                             }
-                        }
-                    });
-
-                } else {
-                    Toast.makeText(PostActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+                        });
+                    } else {
+                        Toast.makeText(PostActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            parseObject.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Toast.makeText(PostActivity.this, String.format("%s : %s", e.getCode(), e.getMessage()), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(PostActivity.this, "Posted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }
+            });
+        }
     }
 
     ParseFile p;
     ImageView i;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             ll.removeAllViews();
             t = Post.IMAGE;
-            Picasso.with(this).load(new File(dir+file_name)).into(i);
+            Picasso.with(this).load(new File(dir + file_name)).into(i);
             ll.addView(i);
         } else if (requestCode == ACTION_TAKE_VIDEO && resultCode == RESULT_OK) {
             ll.removeAllViews();
             t = Post.VIDEO;
+            v.setVideoURI(Uri.fromFile(new File(dir + file_name)));
+            v.setMediaController(new MediaController(this));
+            ll.addView(v);
+
         }
     }
 }

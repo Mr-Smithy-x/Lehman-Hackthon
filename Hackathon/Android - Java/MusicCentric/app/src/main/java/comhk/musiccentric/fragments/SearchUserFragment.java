@@ -30,18 +30,14 @@ import comhk.musiccentric.models.User;
 /**
  * Created by charlton on 10/16/15.
  */
-public class FeedFragment extends Fragment {
+public class SearchUserFragment extends Fragment {
 
     RecyclerView mRecycler;
     PostAdapter mPAdapter;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getInfo();
-    }
 
-    public void getInfo() {
+    public void getInfo(final String user) {
+        mPAdapter.clear();
         ParseQuery<Post> parseQuery = ParseQuery.getQuery(Post.class);
         parseQuery.findInBackground(new FindCallback<Post>() {
 
@@ -53,8 +49,11 @@ public class FeedFragment extends Fragment {
                     e.printStackTrace();
                     return;
                 }
+
                 for (Post f : list) {
-                    mPAdapter.appendItem(f);
+                    if(f.getName().toLowerCase().contains(user)) {
+                        mPAdapter.appendItem(f);
+                    }
                 }
             }
         });
@@ -70,7 +69,6 @@ public class FeedFragment extends Fragment {
         mRecycler.getItemAnimator().setSupportsChangeAnimations(true);
         mRecycler.getItemAnimator().setChangeDuration(300);
         mRecycler.getItemAnimator().setMoveDuration(300);
-
 
         mRecycler.setAdapter(mPAdapter = new PostAdapter() {
             @Override
@@ -91,5 +89,9 @@ public class FeedFragment extends Fragment {
 
     public void GrabContent() {
 
+    }
+
+    public void search(String query) {
+        getInfo(query);
     }
 }

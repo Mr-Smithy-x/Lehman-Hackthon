@@ -3,6 +3,7 @@ package comhk.musiccentric;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -58,15 +59,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         commit.setOnClickListener(this);
     }
 
-    public void chooseImage(){
+    public void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Profile Picture"),REQUEST_TAKE_GALLERY_VIDEO);
+        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), REQUEST_TAKE_GALLERY_VIDEO);
     }
 
-    public void saveUser(User user){
-        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
+    public void saveUser(User user) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Centric", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("user", user.getUser());
         editor.putString("pass", user.getPassword());
@@ -75,63 +76,71 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         Global.user = user;
     }
 
-    public User getUser(){
-        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
-        return User.Build().setUser(sharedPreferences.getString("user","")).setEmail(sharedPreferences.getString("email","")).setPassword(sharedPreferences.getString("pass", ""));
+    public User getUser() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Centric", MODE_PRIVATE);
+        return User.Build().setUser(sharedPreferences.getString("user", "")).setEmail(sharedPreferences.getString("email", "")).setPassword(sharedPreferences.getString("pass", ""));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                Uri selectedImageUri = data.getData();
-
-                // OI FILE Manager
-                filemanagerstring = selectedImageUri.getPath();
-
-                // MEDIA GALLERY
-                selectedImagePath = getPath(selectedImageUri);
-                File f = new File(filemanagerstring);
-
-                Picasso.with(imageView.getContext()).load(f).into(imageView);
+                String s = null;
+                Uri uri = data.getData();
+                File f = new File(s = uri.getPath());
+                Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
                 try {
-                    FileInputStream fis = new FileInputStream(f);
-                    byte[] b = new byte[(int)f.length()];
-                    fis.read(b, 0, (int)f.length());
-                    fis.close();
-                    if (filemanagerstring != null) {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    // Log.d(TAG, String.valueOf(bitmap));
 
-                        final ParseFile p = new ParseFile(filemanagerstring.split("/")[filemanagerstring.split("/").length-1],b);
-                        p.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    ParseUser.getCurrentUser().put("icon", p);
-                                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            if(e==null){
-                                                Toast.makeText(ProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-                                            }else{
-                                                e.printStackTrace();
+                    Picasso.with(imageView.getContext()).load(uri).into(imageView);
+                    try {
+                        FileInputStream fis = new FileInputStream(f);
+                        byte[] b = new byte[(int) f.length()];
+                        fis.read(b, 0, (int) f.length());
+                        fis.close();
+                        if (s != null) {
+
+                            final ParseFile p = new ParseFile(s.replace("/","").replace("-","").replace("_",""), b);
+                            p.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        ParseUser.getCurrentUser().put("icon", p);
+                                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    Toast.makeText(ProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        }
-                                    });
-                                }else{
-                                    Toast.makeText(ProfileActivity.this, "Could not upload picture" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                                    } else {
+                                        Toast.makeText(ProfileActivity.this, "Could not upload picture" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Null", Toast.LENGTH_SHORT).show();
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
         }
     }
 
     // UPDATED!
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -143,18 +152,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else
             return null;
     }
+
     @Override
     public void onClick(View v) {
-        if(old.getText().toString().equals(Global.user.getPassword())){
-            if(new1.getText().toString().equals(new2.getText().toString())){
+        if (old.getText().toString().equals(Global.user.getPassword())) {
+            if (new1.getText().toString().equals(new2.getText().toString())) {
                 ParseUser.getCurrentUser().setPassword(new2.getText().toString());
-                Toast.makeText(this,"Password Changed!", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(this,"Error, passwords are not the same.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Password Changed!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error, passwords are not the same.", Toast.LENGTH_SHORT).show();
 
             }
-        }else{
-            Toast.makeText(this,"Old password Incorrect!",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Old password Incorrect!", Toast.LENGTH_SHORT).show();
         }
     }
 }

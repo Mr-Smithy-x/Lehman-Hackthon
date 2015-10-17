@@ -108,10 +108,10 @@ public abstract class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostH
     }
 
     public void appendItem(Post override) {
-        if(!posts.contains(override)) {
-            posts.add(override);
-            notifyItemInserted(posts.size());
-        }
+        if(posts.contains(override)) return;
+            posts.add(0, override);
+            notifyItemInserted(0);
+
     }
 
     public void clear() {
@@ -142,7 +142,6 @@ public abstract class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostH
                     webop = itemView.findViewById(R.id.feed_image_temp_weboption);
                     break;
                 case AUDIO:
-                    webop = itemView.findViewById(R.id.feed_audio_temp_weboption);
                     break;
                 case VIDEO:
                     webop = itemView.findViewById(R.id.feed_video_temp_weboption);

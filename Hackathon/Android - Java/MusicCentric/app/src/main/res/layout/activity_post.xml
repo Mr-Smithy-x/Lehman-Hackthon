@@ -12,7 +12,7 @@
         android:id="@+id/lim"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_grey_300"
+        android:background="@color/md_blue_500"
         android:elevation="8dp"
         android:gravity="right"
         android:orientation="horizontal">
@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:padding="16dp"
             android:text="MuseMe"
-            android:textColor="@color/md_blue_600"
+            android:textColor="@color/md_blue_100"
             android:textSize="18sp" />
 
         <View
@@ -38,7 +38,7 @@
             android:layout_gravity="right"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="Post"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/md_blue_100"
             android:textSize="18sp" />
 
     </LinearLayout>

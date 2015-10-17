@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/cardview_light_background"
-            android:elevation="4dp"
             android:padding="16dp">
 
 
@@ -45,18 +44,6 @@
                 android:textSize="16sp" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <ImageView
-                android:id="@+id/feed_audio_temp_weboption"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/testimg" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
