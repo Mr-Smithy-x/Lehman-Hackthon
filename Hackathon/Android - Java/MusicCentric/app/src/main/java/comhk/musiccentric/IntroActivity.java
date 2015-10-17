@@ -30,6 +30,7 @@ import com.parse.SignUpCallback;
 
 import comhk.musiccentric.adapters.VPagerAdapter;
 import comhk.musiccentric.callbacks.OnIntroBackListener;
+import comhk.musiccentric.database.Global;
 import comhk.musiccentric.models.Page;
 import comhk.musiccentric.models.Post;
 import comhk.musiccentric.models.User;
@@ -61,6 +62,7 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         editor.putString("pass", user.getPassword());
         editor.putString("email", user.getEmail());
         editor.commit();
+        Global.user = user;
     }
 
     public User getUser(){
@@ -138,7 +140,6 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
             super.onCreate(savedInstanceState);
         }
 
-
         private ImageView mImage;
         private AppCompatEditText mEmail;
         private AppCompatEditText mPassword;
@@ -151,7 +152,6 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             final View view = inflater.inflate(R.layout.final_fragment, container, false);
-
             mEmail = (AppCompatEditText) view.findViewById(R.id.final_frag_email);
             mPassword = (AppCompatEditText) view.findViewById(R.id.final_frag_pass);
             mUsername = (AppCompatEditText) view.findViewById(R.id.final_frag_user);
@@ -161,25 +161,31 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
             mUsername.setText(getUser().getUser());
             mEmail.setText(getUser().getEmail());
             mPassword.setText(getUser().getPassword());
+            if(mUsername.length()>0){
+                do_p();
+            }
             mTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    visible = !visible;
-                    if (!visible) {
-                        mEmail.setVisibility(View.GONE);
-                        mTextView.setText("I dont have an account");
-                    } else {
-                        mEmail.setVisibility(View.VISIBLE);
-                        mTextView.setText("I have an account");
-                    }
+                   do_p();
                 }
             });
             mRegister.setOnClickListener(this);
-
             return view;
         }
 
         private OnIntroBackListener onIntroBackListener;
+
+        public void do_p(){
+            visible = !visible;
+            if (!visible) {
+                mEmail.setVisibility(View.GONE);
+                mTextView.setText("Signup Please");
+            } else {
+                mEmail.setVisibility(View.VISIBLE);
+                mTextView.setText("I have an account");
+            }
+        }
 
         @Override
         public void onAttach(Context context) {

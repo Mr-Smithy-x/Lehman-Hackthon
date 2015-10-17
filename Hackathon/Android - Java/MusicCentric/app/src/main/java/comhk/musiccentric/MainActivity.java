@@ -12,13 +12,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import comhk.musiccentric.adapters.VPagerAdapter;
 import comhk.musiccentric.fragments.FeedFragment;
 import comhk.musiccentric.models.Page;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     NavigationView mNav;
     CoordinatorLayout mCoords;
@@ -65,10 +66,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.mTab = (TabLayout) findViewById(R.id.main_tab);
         this.mDrawer = (DrawerLayout) findViewById(R.id.main_drawer);
         this.mPager = (ViewPager) findViewById(R.id.main_pager);
+        mNav.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onClick(View v) {
         startActivity(new Intent(this, PostActivity.class));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.nav_profile:
+                    Intent i = new Intent(this, ProfileActivity.class);
+                    startActivity(i);
+                break;
+        }
+        return false;
     }
 }

@@ -16,6 +16,8 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import comhk.musiccentric.R;
@@ -44,6 +46,7 @@ public class FeedFragment extends Fragment {
 
             @Override
             public void done(List<Post> list, ParseException e) {
+                Collections.reverse(list);
                 if (e != null) {
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
