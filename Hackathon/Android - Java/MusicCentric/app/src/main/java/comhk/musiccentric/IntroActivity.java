@@ -45,9 +45,13 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        Parse.enableLocalDatastore(this);
-        ParseObject.registerSubclass(Post.class);
-        Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
+        try {
+            Parse.enableLocalDatastore(this);
+            ParseObject.registerSubclass(Post.class);
+            Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
+        } catch (Exception ex) {
+            finish();
+        }
         mPager = (ViewPager) findViewById(R.id.intro_viewpager);
         mPager.setAdapter(mVPAdapter = new VPagerAdapter(getSupportFragmentManager()));
         mPager.setOffscreenPageLimit(5);
@@ -55,8 +59,8 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
     }
 
 
-    public void saveUser(User user){
-        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
+    public void saveUser(User user) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Centric", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("user", user.getUser());
         editor.putString("pass", user.getPassword());
@@ -65,9 +69,9 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         Global.user = user;
     }
 
-    public User getUser(){
-        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
-        return User.Build().setUser(sharedPreferences.getString("user","")).setEmail(sharedPreferences.getString("email","")).setPassword(sharedPreferences.getString("pass", ""));
+    public User getUser() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Centric", MODE_PRIVATE);
+        return User.Build().setUser(sharedPreferences.getString("user", "")).setEmail(sharedPreferences.getString("email", "")).setPassword(sharedPreferences.getString("pass", ""));
     }
 
     @Override
@@ -80,7 +84,7 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
                 parseUser.setPassword(user.getPassword());
                 parseUser.setUsername(user.getUser());
 
-                if(visible && user.getEmail().length() > 6 ){
+                if (visible && user.getEmail().length() > 6) {
 
                     parseUser.setEmail(user.getEmail());
                     parseUser.signUpInBackground(new SignUpCallback() {
@@ -93,14 +97,14 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
                                 } else {
                                     Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-                            }catch (Exception ex){
+                            } catch (Exception ex) {
                                 ex.printStackTrace();
                                 Toast.makeText(IntroActivity.this, "Error registering in", Toast.LENGTH_SHORT).show();
 
                             }
                         }
                     });
-                }else if(!visible){
+                } else if (!visible) {
 
                     ParseUser.logInInBackground(user.getUser(), user.getPassword(), new LogInCallback() {
                         @Override
@@ -124,7 +128,7 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
                             }
                         }
                     });
-                }else{
+                } else {
 
                 }
             }
@@ -157,17 +161,17 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
             mUsername = (AppCompatEditText) view.findViewById(R.id.final_frag_user);
             mRegister = (AppCompatButton) view.findViewById(R.id.final_frag_btn);
             mImage = (ImageView) view.findViewById(R.id.final_frag_img);
-            mTextView = (AppCompatTextView)view.findViewById(R.id.final_frag_title);
+            mTextView = (AppCompatTextView) view.findViewById(R.id.final_frag_title);
             mUsername.setText(getUser().getUser());
             mEmail.setText(getUser().getEmail());
             mPassword.setText(getUser().getPassword());
-            if(mUsername.length()>0){
+            if (mUsername.length() > 0) {
                 do_p();
             }
             mTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   do_p();
+                    do_p();
                 }
             });
             mRegister.setOnClickListener(this);
@@ -176,7 +180,7 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
 
         private OnIntroBackListener onIntroBackListener;
 
-        public void do_p(){
+        public void do_p() {
             visible = !visible;
             if (!visible) {
                 mEmail.setVisibility(View.GONE);
@@ -202,9 +206,9 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         @Override
         public void onClick(View v) {
             onIntroBackListener.OnButtonClickedFeedBack(v, User.Build()
-                            .setUser(mUsername.getText().toString())
-                            .setEmail(mEmail.getText().toString())
-                            .setPassword(mPassword.getText().toString()), visible);
+                    .setUser(mUsername.getText().toString())
+                    .setEmail(mEmail.getText().toString())
+                    .setPassword(mPassword.getText().toString()), visible);
         }
     }
 

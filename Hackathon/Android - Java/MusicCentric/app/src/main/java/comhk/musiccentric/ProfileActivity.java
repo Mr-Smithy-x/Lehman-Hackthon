@@ -57,6 +57,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
         commit.setOnClickListener(this);
+
+        Picasso.with(this).load(((ParseFile) ParseUser.getCurrentUser().get("icon")).getUrl()).into(imageView);
     }
 
     public void chooseImage() {
@@ -82,25 +84,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                String s = null;
-                Uri uri = data.getData();
-                File f = new File(s = uri.getPath());
-                Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    // Log.d(TAG, String.valueOf(bitmap));
-
-                    Picasso.with(imageView.getContext()).load(uri).into(imageView);
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
+                    String s = null;
+                    Uri uri = data.getData();
+                    File f = new File(s = getPath(uri));
+                    Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
                     try {
-                        FileInputStream fis = new FileInputStream(f);
-                        byte[] b = new byte[(int) f.length()];
-                        fis.read(b, 0, (int) f.length());
-                        fis.close();
-                        if (s != null) {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        // Log.d(TAG, String.valueOf(bitmap));
 
-                            final ParseFile p = new ParseFile(s.replace("/","").replace("-","").replace("_",""), b);
+                        Picasso.with(imageView.getContext()).load(uri).into(imageView);
+                        try {
+                            FileInputStream fis = new FileInputStream(f);
+                            byte[] b = new byte[(int) f.length()];
+                            fis.read(b, 0, (int) f.length());
+                            fis.close();
+
+                            final ParseFile p = new ParseFile(s.replace("/", "").replace("-", "").replace("_", ""), b);
                             p.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
@@ -122,19 +124,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                     }
                                 }
                             });
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Null", Toast.LENGTH_SHORT).show();
 
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
             }
+        }catch (Exception ex){
+            Toast.makeText(this, "Failed to grab media!", Toast.LENGTH_SHORT).show();
         }
     }
 

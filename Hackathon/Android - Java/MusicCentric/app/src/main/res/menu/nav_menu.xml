@@ -4,28 +4,27 @@
     <group
         android:id="@+id/grp1"
         android:enabled="true">
-        <item
-            android:id="@+id/nav_contacts"
-            android:title="Contacts" />
 
         <item
+            android:icon="@drawable/ic_mood_192dp"
             android:id="@+id/nav_profile"
             android:title="My Profile" />
 
+        <item
+            android:icon="@drawable/ic_favorite_outline_128dp"
+            android:id="@+id/nav_about"
+            android:title="About" />
     </group>
 
     <group
         android:id="@+id/grp2"
-        android:enabled="true">
+        android:enabled="false">
         <item
             android:id="@+id/nav_setting"
-            android:title="Settings" />
+            android:title="Team 12" />
         <item
             android:id="@+id/nav_privacy"
-            android:title="Privacy" />
-        <item
-            android:id="@+id/nav_about"
-            android:title="About" />
+            android:title="NSBE Hackathon" />
     </group>
 
 

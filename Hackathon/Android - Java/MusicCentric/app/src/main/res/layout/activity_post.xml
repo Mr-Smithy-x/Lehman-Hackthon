@@ -87,24 +87,43 @@
             android:orientation="horizontal"
             android:layout_below="@id/temp"
             android:paddingBottom="8dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:id="@+id/post_edit_up_img"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:tint="@color/md_blue_grey_600"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="16dp"
                 android:src="@drawable/ic_photo_camera_128dp" />
+
+
+            <ImageView
+                android:id="@+id/post_edit_up_fimg"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:tint="@color/md_blue_grey_600"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_collections_128dp" />
 
             <ImageView
                 android:id="@+id/post_edit_up_vid"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="16dp"
 
                 android:tint="@color/md_blue_grey_600"
                 android:src="@drawable/ic_switch_video_128dp" />
+
+
+            <ImageView
+                android:id="@+id/post_edit_up_fvid"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="16dp"
+
+                android:tint="@color/md_blue_grey_600"
+                android:src="@drawable/ic_sd_storage_128dp" />
 
         </LinearLayout>
     </RelativeLayout>

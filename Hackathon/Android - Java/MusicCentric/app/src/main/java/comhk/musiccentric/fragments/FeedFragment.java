@@ -38,7 +38,11 @@ public class FeedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getInfo();
+        try {
+            getInfo();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     public void getInfo() {
