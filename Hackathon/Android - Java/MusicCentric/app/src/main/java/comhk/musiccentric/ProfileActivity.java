@@ -84,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        try {
+
             if (resultCode == RESULT_OK) {
                 if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                     String s = null;
@@ -135,10 +135,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                 }
             }
-        }catch (Exception ex){
-            Toast.makeText(this, "Failed to grab media!", Toast.LENGTH_SHORT).show();
         }
-    }
+
 
     // UPDATED!
     public String getPath(Uri uri) {

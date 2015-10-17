@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import comhk.musiccentric.ActivityUser;
+import comhk.musiccentric.MainActivity;
 import comhk.musiccentric.R;
 import comhk.musiccentric.VideoActivity;
 import comhk.musiccentric.adapters.PostAdapter;
@@ -79,6 +81,15 @@ public class FeedFragment extends Fragment {
         mRecycler.setAdapter(mPAdapter = new PostAdapter() {
             @Override
             public void OnClicked(View view, int position, Post post) {
+                if(view.getId() == R.id.feed_temp_image){
+                    Intent i = new Intent(getActivity(), ActivityUser.class);
+                    i.putExtra("title", post.getName());
+                    i.putExtra("date", post.getCreatedAt());
+                    i.putExtra("link", post.getIcon());
+
+                    startActivity(i);
+                    return;
+                }
                 switch (post.getType()) {
                     case VIDEO:
                         Intent i = new Intent(getActivity(), VideoActivity.class);

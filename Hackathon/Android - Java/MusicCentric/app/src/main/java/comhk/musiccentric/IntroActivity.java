@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -40,24 +41,37 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
 
     private VPagerAdapter mVPAdapter;
     private ViewPager mPager;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK, "My wakelook");
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        try {
+
             Parse.enableLocalDatastore(this);
             ParseObject.registerSubclass(Post.class);
             Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
-        } catch (Exception ex) {
-            finish();
-        }
+
         mPager = (ViewPager) findViewById(R.id.intro_viewpager);
         mPager.setAdapter(mVPAdapter = new VPagerAdapter(getSupportFragmentManager()));
         mPager.setOffscreenPageLimit(5);
         mVPAdapter.append(Page.Builder().setFragment(new FinalPage()).setTitle("Hello"));
+        wakeLock.acquire();
+
     }
 
+
+    @Override
+    public void finish() {
+
+        wakeLock.release();
+        super.finish();
+    }
 
     public void saveUser(User user) {
         SharedPreferences sharedPreferences = getSharedPreferences("Centric", MODE_PRIVATE);

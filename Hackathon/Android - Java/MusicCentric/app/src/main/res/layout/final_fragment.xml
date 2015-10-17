@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
         android:animateLayoutChanges="true"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/museme" />
 
 
     <android.support.v7.widget.AppCompatTextView

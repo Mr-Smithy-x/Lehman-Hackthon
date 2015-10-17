@@ -137,6 +137,7 @@ public abstract class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostH
             title = (AppCompatTextView) itemView.findViewById(R.id.feed_temp_title);
             desc = (AppCompatTextView) itemView.findViewById(R.id.feed_temp_desc);
             date = (AppCompatTextView)itemView.findViewById(R.id.feed_temp_date);
+            user_icon.setOnClickListener(this);
             switch (type) {
                 case IMAGE:
                     webop = itemView.findViewById(R.id.feed_image_temp_weboption);

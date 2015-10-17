@@ -75,9 +75,11 @@ public class PostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (t >= 3) {
-                        PostAction(t, new File(dir + file_name));
-                    } else {
+
                         PostAction(t, pf);
+                    } else {
+
+                        PostAction(t, new File(dir + file_name));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -176,7 +178,6 @@ public class PostActivity extends AppCompatActivity {
     }
 
     public void PostAction(int type, File parseFile) throws IOException {
-        try {
             byte[] bytes = new byte[(int) parseFile.length()];
 
             if (type != 1) {
@@ -186,11 +187,11 @@ public class PostActivity extends AppCompatActivity {
             }
 
             final Post parseObject = (Post) Post.create(Post.class);
-            parseObject.setName(ParseUser.getCurrentUser().getUsername());
-            parseObject.setStatus(((AppCompatEditText) findViewById(R.id.post_edit_text)).getText().toString());
+        parseObject.setName(ParseUser.getCurrentUser().getUsername());
+        parseObject.setStatus(((AppCompatEditText) findViewById(R.id.post_edit_text)).getText().toString());
             parseObject.setType(type);
-            parseObject.setName(ParseUser.getCurrentUser().getUsername());
-            parseObject.setIcon(((ParseFile) ParseUser.getCurrentUser().get("icon")).getUrl());
+        parseObject.setName(ParseUser.getCurrentUser().getUsername());
+        parseObject.setIcon(((ParseFile) ParseUser.getCurrentUser().get("icon")).getUrl());
             if (type != 1) {
                 final ParseFile p = new ParseFile(file_name, bytes);
                 p.saveInBackground(new SaveCallback() {
@@ -228,10 +229,8 @@ public class PostActivity extends AppCompatActivity {
                     }
                 });
             }
-        }catch (Exception ex){
-            Toast.makeText(this, "Failed to grab image", Toast.LENGTH_SHORT).show();
         }
-    }
+
 
     public void PostAction(int type, final ParseFile parseFile) throws IOException {
         final Post parseObject = (Post) Post.create(Post.class);
@@ -269,7 +268,6 @@ public class PostActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        try {
             if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
                 ll.removeAllViews();
                 t = Post.IMAGE;
@@ -352,10 +350,8 @@ public class PostActivity extends AppCompatActivity {
                 }
 
             }
-        }catch (Exception ex){
-            Toast.makeText(this, "Failed to grab content", Toast.LENGTH_SHORT).show();
         }
-    }
+
 
     ParseFile pf;
 

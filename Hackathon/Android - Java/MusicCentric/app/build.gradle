@@ -33,5 +33,5 @@ dependencies {
     compile 'com.parse.bolts:bolts-android:1.2.1'
     compile 'com.parse:parse-android:1.10.3'
     compile 'net.the4thdimension:audio-wife:1.0.3'
-
+    compile 'com.android.support:palette-v7:23.0.1'
 }
