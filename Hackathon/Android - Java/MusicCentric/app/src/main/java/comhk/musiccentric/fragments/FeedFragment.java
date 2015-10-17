@@ -37,6 +37,20 @@ public class FeedFragment extends Fragment {
     RecyclerView mRecycler;
     PostAdapter mPAdapter;
 
+    Thread thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    Thread.sleep(5000);
+                    getInfo();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+
     @Override
     public void onResume() {
         super.onResume();
@@ -70,6 +84,7 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycler_temp, container, false);
+        thread.start();
         mRecycler = (RecyclerView) view.findViewById(R.id.recycler_t);
         mRecycler.setLayoutManager(new GridLayoutManager(view.getContext(), 1));
         mRecycler.getItemAnimator().setAddDuration(300);
@@ -86,7 +101,6 @@ public class FeedFragment extends Fragment {
                     i.putExtra("title", post.getName());
                     i.putExtra("date", post.getCreatedAt());
                     i.putExtra("link", post.getIcon());
-
                     startActivity(i);
                     return;
                 }
