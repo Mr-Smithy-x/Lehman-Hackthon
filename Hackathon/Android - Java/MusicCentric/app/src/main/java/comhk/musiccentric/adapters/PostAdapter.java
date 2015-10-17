@@ -1,55 +1,101 @@
-package comhk.musiccentric.views;
+package comhk.musiccentric.adapters;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.parse.ParseClassName;
+import com.parse.ParseException;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import comhk.musiccentric.R;
+import comhk.musiccentric.models.Post;
 import comhk.musiccentric.models.User;
 
 /**
  * Created by Gene on 10/16/2015.
  */
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
+public abstract class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     List<Post> posts = new ArrayList<Post>();
-    //    private OnPDFRecyclerListener onPDFRecyclerListener;
-    Context context;
-    LayoutInflater inflater;
-    public PostAdapter(Context context, List<Post> posts){
-        this.context = context;
-        this.posts = posts;
-        inflater = LayoutInflater.from(context);
-    }
+    public final int IMAGE = 0, AUDIO = 1, VIDEO = 2;
+
 
     @Override
     public PostHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new PostHolder(inflater.inflate(R.layout.post_layout, parent, false));
+        if(viewType == IMAGE){
+            return new PostHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_img_tmp,parent, false), viewType);
+        }else if(viewType == AUDIO){
+            return new PostHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_audio_tmp, parent, false), viewType);
+        }else if(viewType == VIDEO){
+            return new PostHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_video_tmp,parent,false), viewType);
+        }
+        return null;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItemAtPosition(position).getType();
     }
 
     @Override
     public void onBindViewHolder(PostHolder holder, int position) {
-        Post post = posts.get(position);
+        Post post = getItemAtPosition(position);
+        holder.title.setText(post.getName());
+        holder.desc.setText(post.getStatus());
+        holder.date.setText(post.getCreatedAt().toLocaleString());
 
-        holder.title.setText(String.format("%s",post.getFile().toUpperCase().replace(".PDF","")));
-        holder.user.setText(String.format());
-        holder.description.setText(String.format());
+                //post.getFile().
 
-        TextDrawable td = TextDrawable.builder().buildRound(String.valueOf(post.getFile().charAt(0)).toUpperCase(), context.getResources().getColor(R.color.md_blue_500));
 
-        if (post.type == Post.IMAGE) {
-            holder.imageView.setImageDrawable(td);
+        Picasso.with(holder.user_icon.getContext()).load(post.getIcon()).into(holder.user_icon,new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+        switch (getItemViewType(position)){
+            case IMAGE:
+                    Picasso.with(holder.webop.getContext()).load(post.getFile().getUrl()).into((ImageView) holder.webop, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                break;
+            case AUDIO:
+
+                break;
+            case VIDEO:
+                ((VideoView)holder.webop).setVideoURI(Uri.parse(post.getFile().getUrl()));
+
+                break;
         }
-
-
     }
 
     @Override
@@ -74,41 +120,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         notifyItemRangeRemoved(0, size);
     }
 
+    public abstract void OnClicked(View view, int position, Post post);
+
+
     public class PostHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView imageView;
-        AppCompatTextView title, user, description;
-        public PostHolder(View itemView) {
+        View webop;
+        AppCompatTextView title, date, desc;
+        ImageView user_icon, fav_icon;
+        int type;
+        public PostHolder(View itemView, int type) {
             super(itemView);
             itemView.setOnClickListener(this);
-            imageView = (ImageView) itemView.findViewById(R.id.post_content);
-            title = (AppCompatTextView) itemView.findViewById(R.id.post_title);
-            user = (AppCompatTextView) itemView.findViewById(R.id.post_user);
-            description = (AppCompatTextView) itemView.findViewById(R.id.post_description);
+            this.type = type;
+            user_icon = (ImageView) itemView.findViewById(R.id.feed_temp_image);
+            fav_icon = (ImageView) itemView.findViewById(R.id.feed_temp_fav);
+            title = (AppCompatTextView) itemView.findViewById(R.id.feed_temp_title);
+            desc = (AppCompatTextView) itemView.findViewById(R.id.feed_temp_desc);
+            date = (AppCompatTextView)itemView.findViewById(R.id.feed_temp_date);
+            switch (type) {
+                case IMAGE:
+                    webop = itemView.findViewById(R.id.feed_image_temp_weboption);
+                    break;
+                case AUDIO:
+                    webop = itemView.findViewById(R.id.feed_audio_temp_weboption);
+                    break;
+                case VIDEO:
+                    webop = itemView.findViewById(R.id.feed_video_temp_weboption);
+                    break;
+            }
+        }
+
+        public int getType(){
+            return type;
         }
 
         @Override
         public void onClick(View v) {
-
+            OnClicked(v, getAdapterPosition(), getItemAtPosition(getAdapterPosition()));
         }
-    }
-
-    public class Post {
-        User user;
-        String description;
-        String content;
-        int type;
-
-        public Post(User user, String description, String content, int type) {
-            this.user = user;
-            this.description = description;
-            this.content = content;
-            this.type = type;
-        }
-
-        // post type
-        public static final int IMAGE = 0;
-        public static final int AUDIO = 1;
-        public static final int VIDEO = 2;
     }
 
 }

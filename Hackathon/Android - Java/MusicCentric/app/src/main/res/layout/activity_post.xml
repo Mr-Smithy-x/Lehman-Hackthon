@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="comhk.musiccentric.PostActivity">
+
+    <LinearLayout
+        android:id="@+id/lim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_grey_300"
+        android:elevation="8dp"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="MuseMe"
+            android:textColor="@color/md_blue_600"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/md_grey_400" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:id="@+id/post_user_btn"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="Post"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lim"
+        android:padding="16dp"
+        tools:context="comhk.musiccentric.PostActivity">
+
+        <ImageView
+            android:id="@+id/post_user_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/post_edit_text"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/post_user_icon"
+            android:background="@android:color/transparent"
+            android:hint="What's on your mind?"
+            android:padding="16dp"
+            android:textColor="@color/md_grey_600" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_edit_text"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <ImageView
+                android:id="@+id/post_edit_up_img"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:tint="@color/md_blue_grey_600"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_photo_camera_128dp" />
+
+            <ImageView
+                android:id="@+id/post_edit_up_vid"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="8dp"
+
+                android:tint="@color/md_blue_grey_600"
+                android:src="@drawable/ic_switch_video_128dp" />
+
+            <ImageView
+                android:id="@+id/post_edit_vid_aud"
+                android:layout_width="36dp"
+
+                android:tint="@color/md_blue_grey_600"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_mic_128dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

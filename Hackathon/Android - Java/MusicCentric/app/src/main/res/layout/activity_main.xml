@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:background="@mipmap/wall"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_drawer"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CollapsingToolbarLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
+        android:id="@+id/main_coords"
+        android:fitsSystemWindows="true"
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
@@ -27,6 +32,9 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/main_tab"
+                app:tabTextColor="?attr/colorPrimaryDark"
+                app:tabIndicatorColor="@color/cardview_light_background"
+                app:tabSelectedTextColor="@color/cardview_light_background"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimary"
                 android:layout_height="wrap_content"/>
@@ -35,7 +43,7 @@
 
         <android.support.v4.view.ViewPager
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/main_viewpager"
+            android:id="@+id/main_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -47,18 +55,22 @@
             android:src="@drawable/ic_create_128dp"
             android:tint="@color/md_white_1000"
             app:pressedTranslationZ="12dp"
-            app:layout_anchor="@id/main_viewpager"
+            app:layout_anchor="@id/main_pager"
             app:layout_anchorGravity="bottom|end"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             />
 
 
-    </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/main_nav"
         android:layout_gravity="start"
+        app:elevation="10dp"
+        app:menu="@menu/nav_menu"
+        app:itemTextColor="@color/cardview_dark_background"
+        app:headerLayout="@layout/nav_header"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 

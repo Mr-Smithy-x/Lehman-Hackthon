@@ -1,7 +1,9 @@
 package comhk.musiccentric;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,12 +24,14 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import comhk.musiccentric.adapters.VPagerAdapter;
 import comhk.musiccentric.callbacks.OnIntroBackListener;
 import comhk.musiccentric.models.Page;
+import comhk.musiccentric.models.Post;
 import comhk.musiccentric.models.User;
 
 
@@ -41,17 +45,31 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         Parse.enableLocalDatastore(this);
+        ParseObject.registerSubclass(Post.class);
         Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
         mPager = (ViewPager) findViewById(R.id.intro_viewpager);
         mPager.setAdapter(mVPAdapter = new VPagerAdapter(getSupportFragmentManager()));
         mPager.setOffscreenPageLimit(5);
         mVPAdapter.append(Page.Builder().setFragment(new FinalPage()).setTitle("Hello"));
-
     }
 
 
+    public void saveUser(User user){
+        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("user", user.getUser());
+        editor.putString("pass", user.getPassword());
+        editor.putString("email", user.getEmail());
+        editor.commit();
+    }
+
+    public User getUser(){
+        SharedPreferences sharedPreferences =getSharedPreferences("Centric", MODE_PRIVATE);
+        return User.Build().setUser(sharedPreferences.getString("user","")).setEmail(sharedPreferences.getString("email","")).setPassword(sharedPreferences.getString("pass", ""));
+    }
+
     @Override
-    public void OnButtonClickedFeedBack(final View view, User user, boolean visible) {
+    public void OnButtonClickedFeedBack(final View view, final User user, boolean visible) {
         if (view.getId() == R.id.final_frag_btn) {
 
             if (user.getUser().length() > 6 && user.getPassword().length() > 6) {
@@ -61,44 +79,59 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
                 parseUser.setUsername(user.getUser());
 
                 if(visible && user.getEmail().length() > 6 ){
+
                     parseUser.setEmail(user.getEmail());
                     parseUser.signUpInBackground(new SignUpCallback() {
                         @Override
                         public void done(ParseException e) {
-                            if(e == null){
-                               Toast.makeText(IntroActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            try {
+                                if (e == null) {
+                                    Toast.makeText(IntroActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                    saveUser(user);
+                                } else {
+                                    Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                                Toast.makeText(IntroActivity.this, "Error registering in", Toast.LENGTH_SHORT).show();
+
                             }
                         }
                     });
                 }else if(!visible){
-                    parseUser.logInInBackground(user.getUser(), user.getPassword(), new LogInCallback() {
+
+                    ParseUser.logInInBackground(user.getUser(), user.getPassword(), new LogInCallback() {
                         @Override
-                        public void done(ParseUser user, ParseException e) {
-                            if(e == null){
-                                Toast.makeText(IntroActivity.this,"Welcome " + user.getUsername(), Toast.LENGTH_SHORT).show();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                    startActivity(new Intent(IntroActivity.this, MainActivity.class), ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
+                        public void done(ParseUser use, ParseException e) {
+                            try {
+                                if (e == null) {
+                                    Toast.makeText(IntroActivity.this, "Welcome " + use.getUsername(), Toast.LENGTH_SHORT).show();
+                                    saveUser(user);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                        startActivity(new Intent(IntroActivity.this, MainActivity.class), ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
+                                    } else {
+                                        startActivity(new Intent(IntroActivity.this, MainActivity.class));
+                                    }
+                                    finish();
                                 } else {
-                                    startActivity(new Intent(IntroActivity.this, MainActivity.class));
+                                    Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-                            }else{
-                                Toast.makeText(IntroActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
+                            } catch (Exception ex) {
+                                Toast.makeText(IntroActivity.this, "Error please retry", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }else{
 
                 }
-
-                finish();
             }
         }
     }
 
 
-    public static class FinalPage extends Fragment implements View.OnClickListener {
+    @SuppressLint("ValidFragment")
+    public class FinalPage extends Fragment implements View.OnClickListener {
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,12 +151,16 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             final View view = inflater.inflate(R.layout.final_fragment, container, false);
+
             mEmail = (AppCompatEditText) view.findViewById(R.id.final_frag_email);
             mPassword = (AppCompatEditText) view.findViewById(R.id.final_frag_pass);
             mUsername = (AppCompatEditText) view.findViewById(R.id.final_frag_user);
             mRegister = (AppCompatButton) view.findViewById(R.id.final_frag_btn);
             mImage = (ImageView) view.findViewById(R.id.final_frag_img);
             mTextView = (AppCompatTextView)view.findViewById(R.id.final_frag_title);
+            mUsername.setText(getUser().getUser());
+            mEmail.setText(getUser().getEmail());
+            mPassword.setText(getUser().getPassword());
             mTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

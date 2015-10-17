@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/grp1"
+        android:enabled="true">
+        <item
+            android:id="@+id/nav_contacts"
+            android:title="Contacts" />
+
+        <item
+            android:id="@+id/nav_profile"
+            android:title="My Profile" />
+
+    </group>
+
+    <group
+        android:id="@+id/grp2"
+        android:enabled="true">
+        <item
+            android:id="@+id/nav_setting"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_privacy"
+            android:title="Privacy" />
+        <item
+            android:id="@+id/nav_about"
+            android:title="About" />
+    </group>
+
+
+</menu>

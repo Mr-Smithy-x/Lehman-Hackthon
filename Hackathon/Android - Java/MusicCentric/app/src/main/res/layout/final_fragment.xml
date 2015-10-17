@@ -22,6 +22,8 @@
 
         android:animateLayoutChanges="true"
         android:id="@+id/final_frag_title"
+        android:textColor="@color/colorPrimary"
+        android:alpha="0.8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/final_frag_img"
@@ -90,7 +92,7 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/final_frag_btn"
                 android:layout_width="match_parent"
-                android:background="?attr/colorPrimary"
+                android:background="@color/colorPrimary"
                 android:alpha="0.8"
 
                 android:layout_height="?attr/actionBarSize"

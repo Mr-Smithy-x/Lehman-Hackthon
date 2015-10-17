@@ -49,8 +49,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <ImageView
-                android:id="@+id/feed_image_temp_weboption"
+                android:id="@+id/feed_audio_temp_weboption"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:scaleType="centerCrop"
@@ -78,9 +79,8 @@
                 android:layout_height="wrap_content"
                 android:lines="2"
                 android:layout_centerVertical="true"
-
-                android:id="@+id/feed_temp_desc"
                 android:singleLine="false"
+                android:id="@+id/feed_temp_desc"
                 android:text="Description"
                 android:textSize="15sp" />
 

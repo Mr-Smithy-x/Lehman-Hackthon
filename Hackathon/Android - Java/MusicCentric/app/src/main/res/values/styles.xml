@@ -8,7 +8,6 @@
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@mipmap/wall</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -23,9 +22,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.Login" parent="AppTheme">
+    <style name="AppTheme.Login" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/md_grey_800</item>
-        <item name="colorButtonNormal">@color/md_teal_500</item>
+        <item name="colorButtonNormal">@color/md_blue_500</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
 
     </style>
 

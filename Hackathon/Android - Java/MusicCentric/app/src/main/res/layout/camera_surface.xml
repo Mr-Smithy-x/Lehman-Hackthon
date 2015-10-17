@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/buttonstart"
+        android:text="Record"
+
+        android:textColor="@color/md_blue_600"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/md_white_1000" />
+
+    <SurfaceView
+        android:layout_above="@id/buttonstart"
+        android:id="@+id/surface_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+</RelativeLayout>
