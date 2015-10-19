@@ -91,8 +91,6 @@ public class FeedFragment extends Fragment {
         mRecycler.getItemAnimator().setSupportsChangeAnimations(true);
         mRecycler.getItemAnimator().setChangeDuration(300);
         mRecycler.getItemAnimator().setMoveDuration(300);
-
-
         mRecycler.setAdapter(mPAdapter = new PostAdapter() {
             @Override
             public void OnClicked(View view, int position, Post post) {

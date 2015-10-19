@@ -55,7 +55,7 @@ public class IntroActivity extends AppCompatActivity implements OnIntroBackListe
 
             Parse.enableLocalDatastore(this);
             ParseObject.registerSubclass(Post.class);
-            Parse.initialize(this, "IbOUEiXtaeKBYQ4jM30rljvZUw7u7PjsX6YrJnIZ", "8SBb8LHMA8HG3HTqur13hFEN1A2gVNnYGEpFUYkY");
+            Parse.initialize(this, "KEY HERE", "KEY HERE");
 
         mPager = (ViewPager) findViewById(R.id.intro_viewpager);
         mPager.setAdapter(mVPAdapter = new VPagerAdapter(getSupportFragmentManager()));
